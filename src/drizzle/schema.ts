@@ -1,5 +1,5 @@
-import { subscriptionTiers, TierNames } from "@/data/subscriptionTiers"
-import { relations } from "drizzle-orm"
+import { subscriptionTiers, TierNames } from "@/data/subscriptionTiers";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -10,16 +10,19 @@ import {
   text,
   timestamp,
   uuid,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
+// Define reusable timestamp columns for tracking creation and update times.
 const createdAt = timestamp("created_at", { withTimezone: true })
   .notNull()
-  .defaultNow()
+  .defaultNow();
 const updatedAt = timestamp("updated_at", { withTimezone: true })
   .notNull()
   .defaultNow()
-  .$onUpdate(() => new Date())
+  .$onUpdate(() => new Date());
 
+// Defines the schema for the 'products' table.
+// Each product is linked to a Clerk user ID.
 export const ProductTable = pgTable(
   "products",
   {
@@ -31,19 +34,22 @@ export const ProductTable = pgTable(
     createdAt,
     updatedAt,
   },
-  table => ({
+  (table) => ({
+    // Index on clerkUserId for faster lookups of a user's products.
     clerkUserIdIndex: index("products.clerk_user_id_index").on(
       table.clerkUserId
     ),
   })
-)
+);
 
+// Defines relationships between the ProductTable and other tables.
 export const productRelations = relations(ProductTable, ({ one, many }) => ({
   productCustomization: one(ProductCustomizationTable),
   productViews: many(ProductViewTable),
   countryGroupDiscounts: many(CountryGroupDiscountTable),
-}))
+}));
 
+// Defines the schema for product-specific banner customizations.
 export const ProductCustomizationTable = pgTable("product_customizations", {
   id: uuid("id").primaryKey().defaultRandom(),
   classPrefix: text("class_prefix"),
@@ -65,8 +71,9 @@ export const ProductCustomizationTable = pgTable("product_customizations", {
   isSticky: boolean("is_sticky").notNull().default(true),
   createdAt,
   updatedAt,
-})
+});
 
+// Defines the one-to-one relationship from ProductCustomizationTable back to ProductTable.
 export const productCustomizationRelations = relations(
   ProductCustomizationTable,
   ({ one }) => ({
@@ -75,8 +82,9 @@ export const productCustomizationRelations = relations(
       references: [ProductTable.id],
     }),
   })
-)
+);
 
+// Defines the schema for tracking views on a product's page.
 export const ProductViewTable = pgTable("product_views", {
   id: uuid("id").primaryKey().defaultRandom(),
   productId: uuid("product_id")
@@ -88,8 +96,9 @@ export const ProductViewTable = pgTable("product_views", {
   visitedAt: timestamp("visited_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-})
+});
 
+// Defines relationships for ProductViewTable to ProductTable and CountryTable.
 export const productViewRelations = relations(ProductViewTable, ({ one }) => ({
   product: one(ProductTable, {
     fields: [ProductViewTable.productId],
@@ -99,8 +108,9 @@ export const productViewRelations = relations(ProductViewTable, ({ one }) => ({
     fields: [ProductViewTable.countryId],
     references: [CountryTable.id],
   }),
-}))
+}));
 
+// Defines the schema for countries, including their unique code and group ID.
 export const CountryTable = pgTable("countries", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull().unique(),
@@ -110,32 +120,36 @@ export const CountryTable = pgTable("countries", {
     .references(() => CountryGroupTable.id, { onDelete: "cascade" }),
   createdAt,
   updatedAt,
-})
+});
 
+// Defines relationships for CountryTable.
 export const countryRelations = relations(CountryTable, ({ many, one }) => ({
   countryGroups: one(CountryGroupTable, {
     fields: [CountryTable.countryGroupId],
     references: [CountryGroupTable.id],
   }),
   productViews: many(ProductViewTable),
-}))
+}));
 
+// Defines purchasing power parity (PPP) groups for countries.
 export const CountryGroupTable = pgTable("country_groups", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull().unique(),
   recommendedDiscountPercentage: real("recommended_discount_percentage"),
   createdAt,
   updatedAt,
-})
+});
 
+// Defines relationships for CountryGroupTable.
 export const countryGroupRelations = relations(
   CountryGroupTable,
   ({ many }) => ({
     countries: many(CountryTable),
     countryGroupDiscounts: many(CountryGroupDiscountTable),
   })
-)
+);
 
+// A linking table for product-specific discounts applied to country groups.
 export const CountryGroupDiscountTable = pgTable(
   "country_group_discounts",
   {
@@ -150,11 +164,13 @@ export const CountryGroupDiscountTable = pgTable(
     createdAt,
     updatedAt,
   },
-  table => ({
+  (table) => ({
+    // A composite primary key ensures a unique discount per product per country group.
     pk: primaryKey({ columns: [table.countryGroupId, table.productId] }),
   })
-)
+);
 
+// Defines relationships for the CountryGroupDiscountTable.
 export const countryGroupDiscountRelations = relations(
   CountryGroupDiscountTable,
   ({ one }) => ({
@@ -167,31 +183,36 @@ export const countryGroupDiscountRelations = relations(
       references: [CountryGroupTable.id],
     }),
   })
-)
+);
 
+// Defines a PostgreSQL enum for the different subscription tiers.
 export const TierEnum = pgEnum(
   "tier",
   Object.keys(subscriptionTiers) as [TierNames]
-)
+);
 
+// Defines the schema for user subscriptions, linking Clerk users to their subscription status.
 export const UserSubscriptionTable = pgTable(
   "user_subscriptions",
   {
     id: uuid("id").primaryKey().defaultRandom(),
     clerkUserId: text("clerk_user_id").notNull().unique(),
-    stripeSubscriptionItemId: text("stripe_subscription_item_id"),
-    stripeSubscriptionId: text("stripe_subscription_id"),
-    stripeCustomerId: text("stripe_customer_id"),
+
+    // Paystack-specific fields for tracking customers and subscriptions.
+    paystackCustomerId: text("paystack_customer_id"),
+    paystackSubscriptionId: text("paystack_subscription_id"),
+
     tier: TierEnum("tier").notNull(),
     createdAt,
     updatedAt,
   },
-  table => ({
+  (table) => ({
+    // Indexes for faster lookups.
     clerkUserIdIndex: index("user_subscriptions.clerk_user_id_index").on(
       table.clerkUserId
     ),
-    stripeCustomerIdIndex: index(
-      "user_subscriptions.stripe_customer_id_index"
-    ).on(table.stripeCustomerId),
+    paystackCustomerIdIndex: index(
+      "user_subscriptions.paystack_customer_id_index"
+    ).on(table.paystackCustomerId),
   })
-)
+);
