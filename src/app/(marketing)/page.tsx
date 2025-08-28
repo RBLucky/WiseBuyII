@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { SignUpButton } from "@clerk/nextjs"
 import { ArrowRightIcon, CheckIcon } from "lucide-react"
 import Link from "next/link"
 import { NeonIcon } from "./_icons/Neon"
@@ -17,6 +16,7 @@ import { formatCompactNumber } from "@/lib/formatters"
 import { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import { BrandLogo } from "@/components/BrandLogo"
+import { GetStartedButton } from "./_components/GetStartedButton" // Import the new component
 
 export default function HomePage() {
   return (
@@ -29,12 +29,10 @@ export default function HomePage() {
           Optimize your product pricing across countries to maximize sales.
           Capture 85% of the untapped market with location-based dynamic pricing
         </p>
-        <SignUpButton>
-          <Button className="text-lg p-6 rounded-xl flex gap-2">
-            Get started for free <ArrowRightIcon className="size-5" />
-          </Button>
-        </SignUpButton>
+        {/* Use the new client component here */}
+        <GetStartedButton />
       </section>
+      {/* ... rest of your page content */}
       <section className="bg-primary text-primary-foreground">
         <div className="container py-16 flex flex-col gap-16 px-8 md:px-16">
           <h2 className="text-3xl text-center text-balance">
@@ -93,7 +91,7 @@ export default function HomePage() {
             <FooterLinkGroup
               title="Help"
               links={[
-                { label: "WiseBuy Discounts", href: "#" },
+                { label: "PPP Discounts", href: "#" },
                 { label: "Discount API", href: "#" },
               ]}
             />
@@ -109,7 +107,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-8">
             <FooterLinkGroup
               title="Features"
-              links={[{ label: "WiseBuy Discounts", href: "#" }]}
+              links={[{ label: "PPP Discounts", href: "#" }]}
             />
             <FooterLinkGroup
               title="Tools"
@@ -190,21 +188,21 @@ function PricingCard({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SignUpButton>
-          <Button
-            className="text-lg w-full rounded-lg"
-            variant={isMostPopular ? "accent" : "default"}
-          >
-            Get Started
-          </Button>
-        </SignUpButton>
+        {/* This button can stay here as it's for marketing, but if it were interactive, it should also be a client component */}
+        <Button
+          asChild
+          className="text-lg w-full rounded-lg"
+          variant={isMostPopular ? "accent" : "default"}
+        >
+          <Link href="/sign-up">Get Started</Link>
+        </Button>
       </CardContent>
       <CardFooter className="flex flex-col gap-4 items-start">
         <Feature className="font-bold">
           {maxNumberOfProducts}{" "}
           {maxNumberOfProducts === 1 ? "product" : "products"}
         </Feature>
-        <Feature>WiseBuy discounts</Feature>
+        <Feature>PPP discounts</Feature>
         {canAccessAnalytics && <Feature>Advanced analytics</Feature>}
         {canRemoveBranding && <Feature>Remove WiseBuy branding</Feature>}
         {canCustomizeBanner && <Feature>Banner customization</Feature>}

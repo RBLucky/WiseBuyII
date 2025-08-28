@@ -19,25 +19,28 @@ const paystack = Paystack(serverEnv.PAYSTACK_SECRET_KEY);
  */
 export async function createCheckoutSession(tier: PaidTierNames) {
   const user = await currentUser();
-  if (user == null) return { error: true, message: "User not authenticated." };
+  // If the user is not authenticated, redirect them to the sign-in page.
+  if (user == null) {
+    return redirect(clientEnv.NEXT_PUBLIC_CLERK_SIGN_IN_URL);
+  }
 
   const subscription = await getUserSubscription(user.id);
-  if (subscription == null)
+  if (subscription == null) {
     return { error: true, message: "Subscription not found." };
+  }
 
   const tierDetails = subscriptionTiers[tier];
+  let session;
 
   try {
     // A unique reference for the transaction. Required by Paystack.
     const reference = crypto.randomBytes(16).toString("hex");
 
     // Initialize a new transaction with Paystack.
-    // When creating a subscription, we pass the 'plan' code.
-    const session = await paystack.transaction.initialize({
+    session = await paystack.transaction.initialize({
       email: user.primaryEmailAddress?.emailAddress!,
       amount: tierDetails.priceInCents,
       plan: tierDetails.paystackPlanCode,
-      // The 'reference' and 'name' properties are added to satisfy the type definition.
       reference: reference,
       name: `${tierDetails.name} Subscription`,
       // The URL where Paystack will redirect the user after payment.
@@ -47,19 +50,19 @@ export async function createCheckoutSession(tier: PaidTierNames) {
         tier: tier,
       },
     });
-
-    // If the session is created successfully, redirect the user to the authorization URL.
-    if (session.data && session.data.authorization_url) {
-      redirect(session.data.authorization_url);
-    } else {
-      return { error: true, message: "Could not create payment session." };
-    }
   } catch (error) {
     console.error("Paystack Error:", error);
     return {
       error: true,
       message: "An error occurred while creating the payment session.",
     };
+  }
+
+  // If the session is created successfully, redirect the user to the authorization URL.
+  if (session.data && session.data.authorization_url) {
+    redirect(session.data.authorization_url);
+  } else {
+    return { error: true, message: "Could not create payment session." };
   }
 }
 
