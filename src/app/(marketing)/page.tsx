@@ -1,9 +1,13 @@
-import { Button } from "@/components/ui/button"
-import { ArrowRightIcon, CheckIcon } from "lucide-react"
-import Link from "next/link"
-import { NeonIcon } from "./_icons/Neon"
-import { ClerkIcon } from "./_icons/Clerk"
-import { subscriptionTiersInOrder } from "@/data/subscriptionTiers"
+import { Button } from "@/components/ui/button";
+import { SignUpButton } from "@clerk/nextjs";
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  GithubIcon,
+  TwitterIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { ReactNode } from "react";
 import {
   Card,
   CardContent,
@@ -11,16 +15,24 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { formatCompactNumber } from "@/lib/formatters"
-import { ReactNode } from "react"
-import { cn } from "@/lib/utils"
-import { BrandLogo } from "@/components/BrandLogo"
-import { GetStartedButton } from "./_components/GetStartedButton" // Import the new component
+} from "@/components/ui/card";
+import { BrandLogo } from "@/components/BrandLogo";
+import { cn } from "@/lib/utils";
+import { formatCompactNumber } from "@/lib/formatters";
+import { subscriptionTiersInOrder } from "@/data/subscriptionTiers";
+import { ClerkIcon } from "./_icons/Clerk";
+import { NeonIcon } from "./_icons/Neon";
+import { GetStartedButton } from "./_components/GetStartedButton";
+import { NewsletterForm } from "./_components/NewsletterForm";
 
+/**
+ * The primary marketing homepage for the application.
+ * It includes a hero section, social proof, pricing, and a detailed footer.
+ */
 export default function HomePage() {
   return (
     <>
+      {/* Hero Section */}
       <section className="min-h-screen bg-[radial-gradient(hsl(0,72%,65%,40%),hsl(24,62%,73%,40%),hsl(var(--background))_60%)] flex items-center justify-center text-center text-balance flex-col gap-8 px-4">
         <h1 className="text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight m-4">
           Price Smarter, Sell bigger!
@@ -29,10 +41,10 @@ export default function HomePage() {
           Optimize your product pricing across countries to maximize sales.
           Capture 85% of the untapped market with location-based dynamic pricing
         </p>
-        {/* Use the new client component here */}
         <GetStartedButton />
       </section>
-      {/* ... rest of your page content */}
+
+      {/* Social Proof Section */}
       <section className="bg-primary text-primary-foreground">
         <div className="container py-16 flex flex-col gap-16 px-8 md:px-16">
           <h2 className="text-3xl text-center text-balance">
@@ -72,89 +84,87 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
       <section id="pricing" className=" px-8 py-16 bg-accent/5">
         <h2 className="text-4xl text-center text-balance font-semibold mb-8">
           Pricing software which pays for itself 20x over
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-          {subscriptionTiersInOrder.map(tier => (
+          {subscriptionTiersInOrder.map((tier) => (
             <PricingCard key={tier.name} {...tier} />
           ))}
         </div>
       </section>
-      <footer className="container pt-16 pb-8 flex flex-col sm:flex-row gap-8 sm:gap-4 justify-between items-start">
-        <Link href="/">
-          <BrandLogo />
-        </Link>
-        <div className="flex flex-col sm:flex-row gap-8">
-          <div className="flex flex-col gap-8">
+
+      {/* Footer Section */}
+      <footer className="bg-primary text-primary-foreground">
+        <div className="container py-16">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+            <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
+              <Link href="/">
+                <BrandLogo />
+              </Link>
+              <p className="text-sm text-primary-foreground/80">
+                Price Smarter, Sell Bigger.
+              </p>
+            </div>
+
             <FooterLinkGroup
-              title="Help"
+              title="Product"
               links={[
-                { label: "PPP Discounts", href: "#" },
-                { label: "Discount API", href: "#" },
-              ]}
-            />
-            <FooterLinkGroup
-              title="Solutions"
-              links={[
-                { label: "Newsletter", href: "#" },
-                { label: "SaaS Business", href: "#" },
-                { label: "Online Courses", href: "#" },
-              ]}
-            />
-          </div>
-          <div className="flex flex-col gap-8">
-            <FooterLinkGroup
-              title="Features"
-              links={[{ label: "PPP Discounts", href: "#" }]}
-            />
-            <FooterLinkGroup
-              title="Tools"
-              links={[
-                { label: "Salary Converter", href: "#" },
-                { label: "Coupon Generator", href: "#" },
-                { label: "Stripe App", href: "#" },
+                { label: "Features", href: "/#features" },
+                { label: "Pricing", href: "/#pricing" },
+                { label: "Integrations", href: "/integrations" },
+                { label: "Documentation", href: "/docs" },
               ]}
             />
             <FooterLinkGroup
               title="Company"
               links={[
-                { label: "Affiliate", href: "#" },
-                { label: "Twitter", href: "#" },
-                { label: "Terms of Service", href: "#" },
+                { label: "About", href: "/about" },
+                { label: "Blog", href: "/blog" },
+                { label: "Affiliates", href: "/affiliates" },
               ]}
             />
+            <FooterLinkGroup
+              title="Help"
+              links={[
+                { label: "Contact Us", href: "/contact" },
+                { label: "Tutorials", href: "/tutorials" },
+                { label: "API Status", href: "#" }, // Placeholder for your status page link
+              ]}
+            />
+            <div className="col-span-2 md:col-span-1">
+              <NewsletterForm />
+            </div>
           </div>
-          <div className="flex flex-col gap-8">
-            <FooterLinkGroup
-              title="Integrations"
-              links={[
-                { label: "Lemon Squeezy", href: "#" },
-                { label: "Gumroad", href: "#" },
-                { label: "Stripe", href: "#" },
-                { label: "Chargebee", href: "#" },
-                { label: "Paddle", href: "#" },
-              ]}
-            />
-            <FooterLinkGroup
-              title="Tutorials"
-              links={[
-                { label: "Any Website", href: "#" },
-                { label: "Lemon Squeezy", href: "#" },
-                { label: "Gumroad", href: "#" },
-                { label: "Stripe", href: "#" },
-                { label: "Chargebee", href: "#" },
-                { label: "Paddle", href: "#" },
-              ]}
-            />
+          <div className="mt-16 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-primary-foreground/60">
+              © {new Date().getFullYear()} WiseBuy, Inc. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="/terms" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">Privacy Policy</Link>
+              {/* Add your social media links to the hrefs */}
+              <Link href="#" aria-label="Twitter">
+                <TwitterIcon className="size-5 text-primary-foreground/60 hover:text-primary-foreground transition-colors" />
+              </Link>
+              <Link href="#" aria-label="GitHub">
+                <GithubIcon className="size-5 text-primary-foreground/60 hover:text-primary-foreground transition-colors" />
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
     </>
-  )
+  );
 }
 
+/**
+ * Renders a single pricing card for the marketing page.
+ * @param {object} props - The properties for the pricing card, based on subscription tiers.
+ */
 function PricingCard({
   name,
   priceInCents,
@@ -164,7 +174,7 @@ function PricingCard({
   canAccessAnalytics,
   canCustomizeBanner,
 }: (typeof subscriptionTiersInOrder)[number]) {
-  const isMostPopular = name === "Standard"
+  const isMostPopular = name === "Standard";
 
   return (
     <Card
@@ -188,14 +198,14 @@ function PricingCard({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* This button can stay here as it's for marketing, but if it were interactive, it should also be a client component */}
-        <Button
-          asChild
-          className="text-lg w-full rounded-lg"
-          variant={isMostPopular ? "accent" : "default"}
-        >
-          <Link href="/sign-up">Get Started</Link>
-        </Button>
+        <SignUpButton>
+          <Button
+            className="text-lg w-full rounded-lg"
+            variant={isMostPopular ? "accent" : "default"}
+          >
+            Get Started
+          </Button>
+        </SignUpButton>
       </CardContent>
       <CardFooter className="flex flex-col gap-4 items-start">
         <Feature className="font-bold">
@@ -208,41 +218,58 @@ function PricingCard({
         {canCustomizeBanner && <Feature>Banner customization</Feature>}
       </CardFooter>
     </Card>
-  )
+  );
 }
 
+/**
+ * Renders a single feature line item with a checkmark icon.
+ * @param {object} props - Component properties.
+ * @param {ReactNode} props.children - The content of the feature.
+ * @param {string} [props.className] - Optional additional class names.
+ */
 function Feature({
   children,
   className,
 }: {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
 }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <CheckIcon className="size-4 stroke-accent bg-accent/25 rounded-full p-0.5" />
       <span>{children}</span>
     </div>
-  )
+  );
 }
 
+/**
+ * Renders a group of links with a title for the footer.
+ * @param {object} props - Component properties.
+ * @param {string} props.title - The title of the link group.
+ * @param {Array<{label: string; href: string}>} props.links - The links to render.
+ */
 function FooterLinkGroup({
   title,
   links,
 }: {
-  title: string
-  links: { label: string; href: string }[]
+  title: string;
+  links: { label: string; href: string }[];
 }) {
   return (
     <div className="flex flex-col gap-4">
       <h3 className="font-semibold">{title}</h3>
       <ul className="flex flex-col gap-2 text-sm">
-        {links.map(link => (
+        {links.map((link) => (
           <li key={link.href}>
-            <Link href={link.href}>{link.label}</Link>
+            <Link
+              href={link.href}
+              className="text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+            >
+              {link.label}
+            </Link>
           </li>
         ))}
       </ul>
     </div>
-  )
+  );
 }
