@@ -204,7 +204,7 @@ function PricingCard({
           {maxNumberOfProducts}{" "}
           {maxNumberOfProducts === 1 ? "product" : "products"}
         </Feature>
-        <Feature>Wise discounts</Feature>
+        <Feature>PPP discounts</Feature>
         {canAccessAnalytics && <Feature>Advanced analytics</Feature>}
         {canRemoveBranding && <Feature>Remove WiseBuy branding</Feature>}
         {canCustomizeBanner && <Feature>Banner customization</Feature>}

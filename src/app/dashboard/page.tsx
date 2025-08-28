@@ -122,7 +122,7 @@ function PricingCard({
       <CardHeader>
         <div className="text-accent font-semibold mb-8">{name}</div>
         <CardTitle className="text-xl font-bold">
-          ${priceInCents / 100} /mo
+          R{priceInCents / 100} /mo
         </CardTitle>
         <CardDescription>
           {formatCompactNumber(maxNumberOfVisits)} pricing page visits/mo

@@ -19,7 +19,7 @@ import {
   createCancelSession,
   createCheckoutSession,
   createCustomerPortalSession,
-} from "@/server/actions/stripe"
+} from "@/server/actions/paystack"
 import { getProductCount } from "@/server/db/products"
 import { getProductViewCount } from "@/server/db/productViews"
 import { getUserSubscriptionTier } from "@/server/db/subscription"
@@ -119,8 +119,9 @@ function PricingCard({
     <Card className="shadow-none rounded-3xl overflow-hidden">
       <CardHeader>
         <div className="text-accent font-semibold mb-8">{name}</div>
+        {/* Changed currency symbol from $ to R */}
         <CardTitle className="text-xl font-bold">
-          ${priceInCents / 100} /mo
+          R{priceInCents / 100} /mo
         </CardTitle>
         <CardDescription>
           {formatCompactNumber(maxNumberOfVisits)} pricing page visits/mo
@@ -151,7 +152,7 @@ function PricingCard({
         <Feature>PPP discounts</Feature>
         {canCustomizeBanner && <Feature>Banner customization</Feature>}
         {canAccessAnalytics && <Feature>Advanced analytics</Feature>}
-        {canRemoveBranding && <Feature>Remove Easy PPP branding</Feature>}
+        {canRemoveBranding && <Feature>Remove WiseBuy branding</Feature>}
       </CardFooter>
     </Card>
   )
