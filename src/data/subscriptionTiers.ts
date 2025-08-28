@@ -1,8 +1,10 @@
-import { env } from "./env/server"
+import { env } from "./env/server";
 
-export type TierNames = keyof typeof subscriptionTiers
-export type PaidTierNames = Exclude<TierNames, "Free">
+export type TierNames = keyof typeof subscriptionTiers;
+export type PaidTierNames = Exclude<TierNames, "Free">;
 
+// This object maps out the details of each subscription tier available in the application.
+// It's the single source of truth for pricing, features, and plan identifiers.
 export const subscriptionTiers = {
   Free: {
     name: "Free",
@@ -12,49 +14,56 @@ export const subscriptionTiers = {
     canAccessAnalytics: false,
     canCustomizeBanner: false,
     canRemoveBranding: false,
-    stripePriceId: null,
+    // Free plan does not have a corresponding Paystack plan.
+    paystackPlanCode: null,
   },
   Basic: {
     name: "Basic",
-    priceInCents: 19000,
+    priceInCents: 1900,
     maxNumberOfProducts: 5,
     maxNumberOfVisits: 10000,
     canAccessAnalytics: true,
     canCustomizeBanner: false,
     canRemoveBranding: true,
-    stripePriceId: env.STRIPE_BASIC_PLAN_STRIPE_PRICE_ID,
+    // Plan Code from your Paystack Dashboard for the Basic tier.
+    paystackPlanCode: env.PAYSTACK_BASIC_PLAN_CODE,
   },
   Standard: {
     name: "Standard",
-    priceInCents: 49000,
+    priceInCents: 4900,
     maxNumberOfProducts: 30,
     maxNumberOfVisits: 100000,
     canAccessAnalytics: true,
     canCustomizeBanner: true,
     canRemoveBranding: true,
-    stripePriceId: env.STRIPE_STANDARD_PLAN_STRIPE_PRICE_ID,
+    // Plan Code from your Paystack Dashboard for the Standard tier.
+    paystackPlanCode: env.PAYSTACK_STANDARD_PLAN_CODE,
   },
   Premium: {
     name: "Premium",
-    priceInCents: 99000,
+    priceInCents: 9900,
     maxNumberOfProducts: 50,
     maxNumberOfVisits: 1000000,
     canAccessAnalytics: true,
     canCustomizeBanner: true,
     canRemoveBranding: true,
-    stripePriceId: env.STRIPE_PREMIUM_PLAN_STRIPE_PRICE_ID,
+    // Plan Code from your Paystack Dashboard for the Premium tier.
+    paystackPlanCode: env.PAYSTACK_PREMIUM_PLAN_CODE,
   },
-} as const
+} as const;
 
+// An array of the tiers in a specific order for display purposes on the pricing page.
 export const subscriptionTiersInOrder = [
   subscriptionTiers.Free,
   subscriptionTiers.Basic,
   subscriptionTiers.Standard,
   subscriptionTiers.Premium,
-] as const
+] as const;
 
-export function getTierByPriceId(stripePriceId: string) {
+// A helper function to find a tier's details based on its Paystack Plan Code.
+// This is useful for handling webhooks from Paystack.
+export function getTierByPlanCode(planCode: string) {
   return Object.values(subscriptionTiers).find(
-    tier => tier.stripePriceId === stripePriceId
-  )
+    (tier) => tier.paystackPlanCode === planCode
+  );
 }
