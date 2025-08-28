@@ -119,7 +119,6 @@ function PricingCard({
     <Card className="shadow-none rounded-3xl overflow-hidden">
       <CardHeader>
         <div className="text-accent font-semibold mb-8">{name}</div>
-        {/* Changed currency symbol from $ to R */}
         <CardTitle className="text-xl font-bold">
           R{priceInCents / 100} /mo
         </CardTitle>
@@ -149,7 +148,7 @@ function PricingCard({
           {maxNumberOfProducts}{" "}
           {maxNumberOfProducts === 1 ? "product" : "products"}
         </Feature>
-        <Feature>PPP discounts</Feature>
+        <Feature>WiseBuy discounts</Feature>
         {canCustomizeBanner && <Feature>Banner customization</Feature>}
         {canAccessAnalytics && <Feature>Advanced analytics</Feature>}
         {canRemoveBranding && <Feature>Remove WiseBuy branding</Feature>}

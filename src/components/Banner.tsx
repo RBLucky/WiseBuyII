@@ -33,7 +33,7 @@ export function Banner({
     <>
       <style type="text/css">
         {`
-          .${prefix}easy-ppp-container {
+          .${prefix}wisebuy-container {
             all: revert;
             display: flex;
             flex-direction: column;
@@ -51,7 +51,7 @@ export function Banner({
             text-align: center;
           }
 
-          .${prefix}easy-ppp-branding {
+          .${prefix}wisebuy-branding {
             color: inherit;
             font-size: inherit;
             display: inline-block;
@@ -60,16 +60,16 @@ export function Banner({
         `}
       </style>
 
-      <div className={`${prefix}easy-ppp-container ${prefix}easy-ppp-override`}>
+      <div className={`${prefix}wisebuy-container ${prefix}wisebuy-override`}>
         <span
-          className={`${prefix}easy-ppp-message ${prefix}easy-ppp-override`}
+          className={`${prefix}wisebuy-message ${prefix}wisebuy-override`}
           dangerouslySetInnerHTML={{
             __html: mappedMessage,
           }}
         />
         {!canRemoveBranding && (
           <a
-            className={`${prefix}easy-ppp-branding`}
+            className={`${prefix}wisebuy-branding`}
             href={`${env.NEXT_PUBLIC_SERVER_URL}`}
           >
             Powered by WiseBuy

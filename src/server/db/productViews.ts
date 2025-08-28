@@ -1,10 +1,10 @@
-import { db } from "@/drizzle/db"
+import { db } from "@/drizzle/db";
 import {
   CountryGroupTable,
   CountryTable,
   ProductTable,
   ProductViewTable,
-} from "@/drizzle/schema"
+} from "@/drizzle/schema";
 import {
   CACHE_TAGS,
   dbCache,
@@ -12,17 +12,17 @@ import {
   getIdTag,
   getUserTag,
   revalidateDbCache,
-} from "@/lib/cache"
-import { startOfDay, subDays } from "date-fns"
-import { and, count, desc, eq, gte, SQL, sql } from "drizzle-orm"
-import { tz } from "@date-fns/tz"
+} from "@/lib/cache";
+import { startOfDay, subDays } from "date-fns";
+import { and, count, desc, eq, gte, SQL, sql } from "drizzle-orm";
+import { tz } from "@date-fns/tz";
 
 export function getProductViewCount(userId: string, startDate: Date) {
   const cacheFn = dbCache(getProductViewCountInternal, {
     tags: [getUserTag(userId, CACHE_TAGS.productViews)],
-  })
+  });
 
-  return cacheFn(userId, startDate)
+  return cacheFn(userId, startDate);
 }
 
 export function getViewsByCountryChartData({
@@ -31,10 +31,10 @@ export function getViewsByCountryChartData({
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
   const cacheFn = dbCache(getViewsByCountryChartDataInternal, {
     tags: [
@@ -44,28 +44,28 @@ export function getViewsByCountryChartData({
         : getIdTag(productId, CACHE_TAGS.products),
       getGlobalTag(CACHE_TAGS.countries),
     ],
-  })
+  });
 
   return cacheFn({
     timezone,
     productId,
     userId,
     interval,
-  })
+  });
 }
 
-export function getViewsByPPPChartData({
+export function getViewsByWiseBuyChartData({
   timezone,
   productId,
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
-  const cacheFn = dbCache(getViewsByPPPChartDataInternal, {
+  const cacheFn = dbCache(getViewsByWiseBuyChartDataInternal, {
     tags: [
       getUserTag(userId, CACHE_TAGS.productViews),
       productId == null
@@ -74,14 +74,14 @@ export function getViewsByPPPChartData({
       getGlobalTag(CACHE_TAGS.countries),
       getGlobalTag(CACHE_TAGS.countryGroups),
     ],
-  })
+  });
 
   return cacheFn({
     timezone,
     productId,
     userId,
     interval,
-  })
+  });
 }
 
 export function getViewsByDayChartData({
@@ -90,10 +90,10 @@ export function getViewsByDayChartData({
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
   const cacheFn = dbCache(getViewsByDayChartDataInternal, {
     tags: [
@@ -102,14 +102,14 @@ export function getViewsByDayChartData({
         ? getUserTag(userId, CACHE_TAGS.products)
         : getIdTag(productId, CACHE_TAGS.products),
     ],
-  })
+  });
 
   return cacheFn({
     timezone,
     productId,
     userId,
     interval,
-  })
+  });
 }
 
 export async function createProductView({
@@ -117,9 +117,9 @@ export async function createProductView({
   countryId,
   userId,
 }: {
-  productId: string
-  countryId?: string
-  userId: string
+  productId: string;
+  countryId?: string;
+  userId: string;
 }) {
   const [newRow] = await db
     .insert(ProductViewTable)
@@ -128,10 +128,10 @@ export async function createProductView({
       visitedAt: new Date(),
       countryId: countryId,
     })
-    .returning({ id: ProductViewTable.id })
+    .returning({ id: ProductViewTable.id });
 
   if (newRow != null) {
-    revalidateDbCache({ tag: CACHE_TAGS.productViews, userId, id: newRow.id })
+    revalidateDbCache({ tag: CACHE_TAGS.productViews, userId, id: newRow.id });
   }
 }
 
@@ -145,9 +145,9 @@ async function getProductViewCountInternal(userId: string, startDate: Date) {
         eq(ProductTable.clerkUserId, userId),
         gte(ProductViewTable.visitedAt, startDate)
       )
-    )
+    );
 
-  return counts[0]?.pricingViewCount ?? 0
+  return counts[0]?.pricingViewCount ?? 0;
 }
 
 async function getViewsByCountryChartDataInternal({
@@ -156,13 +156,13 @@ async function getViewsByCountryChartDataInternal({
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
-  const startDate = startOfDay(interval.startDate, { in: tz(timezone) })
-  const productsSq = getProductSubQuery(userId, productId)
+  const startDate = startOfDay(interval.startDate, { in: tz(timezone) });
+  const productsSq = getProductSubQuery(userId, productId);
   return await db
     .with(productsSq)
     .select({
@@ -181,22 +181,22 @@ async function getViewsByCountryChartDataInternal({
     )
     .groupBy(({ countryCode, countryName }) => [countryCode, countryName])
     .orderBy(({ views }) => desc(views))
-    .limit(25)
+    .limit(25);
 }
 
-async function getViewsByPPPChartDataInternal({
+async function getViewsByWiseBuyChartDataInternal({
   timezone,
   productId,
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
-  const startDate = startOfDay(interval.startDate, { in: tz(timezone) })
-  const productsSq = getProductSubQuery(userId, productId)
+  const startDate = startOfDay(interval.startDate, { in: tz(timezone) });
+  const productsSq = getProductSubQuery(userId, productId);
   const productViewSq = db.$with("productViews").as(
     db
       .with(productsSq)
@@ -210,7 +210,7 @@ async function getViewsByPPPChartDataInternal({
       .innerJoin(productsSq, eq(productsSq.id, ProductViewTable.productId))
       .innerJoin(CountryTable, eq(CountryTable.id, ProductViewTable.countryId))
       .where(({ visitedAt }) => gte(visitedAt, startDate))
-  )
+  );
 
   return await db
     .with(productViewSq)
@@ -224,7 +224,7 @@ async function getViewsByPPPChartDataInternal({
       eq(productViewSq.countryGroupId, CountryGroupTable.id)
     )
     .groupBy(({ pppName }) => [pppName])
-    .orderBy(({ pppName }) => pppName)
+    .orderBy(({ pppName }) => pppName);
 }
 
 async function getViewsByDayChartDataInternal({
@@ -233,12 +233,12 @@ async function getViewsByDayChartDataInternal({
   userId,
   interval,
 }: {
-  timezone: string
-  productId?: string
-  userId: string
-  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS]
+  timezone: string;
+  productId?: string;
+  userId: string;
+  interval: (typeof CHART_INTERVALS)[keyof typeof CHART_INTERVALS];
 }) {
-  const productsSq = getProductSubQuery(userId, productId)
+  const productsSq = getProductSubQuery(userId, productId);
   const productViewSq = db.$with("productViews").as(
     db
       .with(productsSq)
@@ -250,14 +250,14 @@ async function getViewsByDayChartDataInternal({
       })
       .from(ProductViewTable)
       .innerJoin(productsSq, eq(productsSq.id, ProductViewTable.productId))
-  )
+  );
 
   return await db
     .with(productViewSq)
     .select({
       date: interval
         .dateGrouper(sql.raw("series"))
-        .mapWith(dateString => interval.dateFormatter(new Date(dateString))),
+        .mapWith((dateString) => interval.dateFormatter(new Date(dateString))),
       views: count(productViewSq.visitedAt),
     })
     .from(interval.sql)
@@ -265,7 +265,7 @@ async function getViewsByDayChartDataInternal({
       eq(interval.dateGrouper(productViewSq.visitedAt), date)
     )
     .groupBy(({ date }) => [date])
-    .orderBy(({ date }) => date)
+    .orderBy(({ date }) => date);
 }
 
 function getProductSubQuery(userId: string, productId: string | undefined) {
@@ -279,7 +279,7 @@ function getProductSubQuery(userId: string, productId: string | undefined) {
           productId == null ? undefined : eq(ProductTable.id, productId)
         )
       )
-  )
+  );
 }
 
 export const CHART_INTERVALS = {
@@ -307,15 +307,15 @@ export const CHART_INTERVALS = {
     dateGrouper: (col: SQL | SQL.Aliased) =>
       sql<string>`DATE_TRUNC('month', ${col})`.inlineParams(),
   },
-}
+};
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: "short",
   timeZone: "UTC",
-})
+});
 
 const monthFormatter = new Intl.DateTimeFormat(undefined, {
   year: "2-digit",
   month: "short",
   timeZone: "UTC",
-})
+});

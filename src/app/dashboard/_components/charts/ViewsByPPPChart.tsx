@@ -8,7 +8,7 @@ import {
 import { formatCompactNumber } from "@/lib/formatters"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 
-export function ViewsByPPPChart({
+export function ViewsByWiseBuyChart({
   chartData,
 }: {
   chartData: { pppName: string; views: number }[]

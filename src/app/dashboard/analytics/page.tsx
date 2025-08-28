@@ -4,13 +4,13 @@ import {
   CHART_INTERVALS,
   getViewsByCountryChartData,
   getViewsByDayChartData,
-  getViewsByPPPChartData,
+  getViewsByWiseBuyChartData,
 } from "@/server/db/productViews"
 import { canAccessAnalytics } from "@/server/permissions"
 import { auth } from "@clerk/nextjs/server"
-import { ChevronDownIcon, SearchCheck } from "lucide-react"
+import { ChevronDownIcon } from "lucide-react"
 import { ViewsByCountryChart } from "../_components/charts/ViewsByCountryChart"
-import { ViewsByPPPChart } from "../_components/charts/ViewsByPPPChart"
+import { ViewsByWiseBuyChart } from "../_components/charts/ViewsByPPPChart"
 import { ViewsByDayChart } from "../_components/charts/ViewsByDayChart"
 import {
   DropdownMenu,
@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { createURL } from "@/lib/utils"
-import { getProduct, getProducts } from "@/server/db/products"
+import { getProducts } from "@/server/db/products"
 import { TimezoneDropdownMenuItem } from "../_components/TimezoneDropdownMenuItem"
 
 export default async function AnalyticsPage({
@@ -105,7 +105,7 @@ export default async function AnalyticsPage({
             userId={userId}
             productId={productId}
           />
-          <ViewsByPPPCard
+          <ViewsByWiseBuyCard
             interval={interval}
             timezone={timezone}
             userId={userId}
@@ -186,18 +186,18 @@ async function ViewsByDayCard(
   )
 }
 
-async function ViewsByPPPCard(
-  props: Parameters<typeof getViewsByPPPChartData>[0]
+async function ViewsByWiseBuyCard(
+  props: Parameters<typeof getViewsByWiseBuyChartData>[0]
 ) {
-  const chartData = await getViewsByPPPChartData(props)
+  const chartData = await getViewsByWiseBuyChartData(props)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Visitors Per PPP Group</CardTitle>
+        <CardTitle>Visitors Per WiseBuy Group</CardTitle>
       </CardHeader>
       <CardContent>
-        <ViewsByPPPChart chartData={chartData} />
+        <ViewsByWiseBuyChart chartData={chartData} />
       </CardContent>
     </Card>
   )
