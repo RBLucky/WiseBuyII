@@ -51,34 +51,34 @@ export default function HomePage() {
             Trusted by the top modern companies
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-16">
-            <Link href="https://neon.tech">
+            <Link href="https://neon.tech" target="_blank" rel="noopener noreferrer">
               <NeonIcon />
             </Link>
-            <Link href="https://clerk.com">
+            <Link href="https://clerk.com" target="_blank" rel="noopener noreferrer">
               <ClerkIcon />
             </Link>
-            <Link href="https://neon.tech">
+            <Link href="https://neon.tech" target="_blank" rel="noopener noreferrer">
               <NeonIcon />
             </Link>
-            <Link href="https://clerk.com">
+            <Link href="https://clerk.com" target="_blank" rel="noopener noreferrer">
               <ClerkIcon />
             </Link>
-            <Link href="https://neon.tech">
+            <Link href="https://neon.tech" target="_blank" rel="noopener noreferrer">
               <NeonIcon />
             </Link>
-            <Link href="https://clerk.com">
+            <Link href="https://clerk.com" target="_blank" rel="noopener noreferrer">
               <ClerkIcon />
             </Link>
-            <Link href="https://neon.tech">
+            <Link href="https://neon.tech" target="_blank" rel="noopener noreferrer">
               <NeonIcon />
             </Link>
-            <Link href="https://clerk.com">
+            <Link href="https://clerk.com" target="_blank" rel="noopener noreferrer">
               <ClerkIcon />
             </Link>
-            <Link href="https://neon.tech">
+            <Link href="https://neon.tech" target="_blank" rel="noopener noreferrer">
               <NeonIcon />
             </Link>
-            <Link className="md:max-xl:hidden" href="https://clerk.com">
+            <Link className="md:max-xl:hidden" href="https://clerk.com" target="_blank" rel="noopener noreferrer">
               <ClerkIcon />
             </Link>
           </div>
@@ -113,7 +113,7 @@ export default function HomePage() {
             <FooterLinkGroup
               title="Product"
               links={[
-                { label: "Features", href: "/#features" },
+                { label: "Features", href: "/features" },
                 { label: "Pricing", href: "/#pricing" },
                 { label: "Integrations", href: "/integrations" },
                 { label: "Documentation", href: "/docs" },
@@ -132,7 +132,7 @@ export default function HomePage() {
               links={[
                 { label: "Contact Us", href: "/contact" },
                 { label: "Tutorials", href: "/tutorials" },
-                { label: "API Status", href: "#" }, // Placeholder for your status page link
+                { label: "API Status", href: "/status" },
               ]}
             />
             <div className="col-span-2 md:col-span-1">
@@ -146,11 +146,10 @@ export default function HomePage() {
             <div className="flex items-center gap-4">
               <Link href="/terms" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">Terms of Service</Link>
               <Link href="/privacy" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">Privacy Policy</Link>
-              {/* Add your social media links to the hrefs */}
-              <Link href="#" aria-label="Twitter">
+              <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
                 <TwitterIcon className="size-5 text-primary-foreground/60 hover:text-primary-foreground transition-colors" />
               </Link>
-              <Link href="#" aria-label="GitHub">
+              <Link href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <GithubIcon className="size-5 text-primary-foreground/60 hover:text-primary-foreground transition-colors" />
               </Link>
             </div>
