@@ -13,7 +13,7 @@ const mockTutorials = [
         difficulty: "Beginner",
     },
     {
-        slug: "#", // This link can be updated when the tutorial is written
+        slug: "/blog/advanced-customization",
         title: "Advanced Customization: Using CSS Prefixes",
         description: "Learn how to use the CSS prefix option to avoid style conflicts and ensure the banner perfectly matches your site's design.",
         difficulty: "Intermediate",

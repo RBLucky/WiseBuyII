@@ -30,7 +30,7 @@ const getPostData = (slug: string) => {
                 <li><strong class="text-foreground">Stronger Brand Loyalty:</strong> Customers appreciate companies that acknowledge their local economic reality.</li>
             </ul>
             <p>WiseBuy makes this complex strategy incredibly simple. With a single line of code, you can start offering fair prices to every visitor, no matter where they are. You unlock the full potential of your global audience, turning visitors into loyal customers.</p>
-          `
+          `,
         },
         {
             slug: "how-to-set-up",
@@ -54,10 +54,41 @@ const getPostData = (slug: string) => {
             <p>Once you've configured your discounts, go to the 'Add to Site' modal from the products page. You'll find a single line of code—your unique script tag. Copy this tag.</p>
             <pre class="p-4 bg-secondary rounded-lg overflow-x-auto text-sm my-4"><code class="language-html">&lt;script src="https://wisebuy.com/api/products/YOUR_PRODUCT_ID/banner"&gt;&lt;/script&gt;</code></pre>
             <p>Finally, open the HTML of your website and paste this script tag just before the closing <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>&lt;/body&gt;</code> tag. That's it! The WiseBuy banner will now automatically appear for eligible visitors.</p>
-          `
+          `,
+        },
+        // The new blog post is added here
+        {
+            slug: "advanced-customization",
+            title: "Advanced Customization: Using CSS Prefixes to Avoid Style Conflicts",
+            author: "John Smith, Head of Engineering",
+            date: "August 18, 2025",
+            content: `
+            <p class="text-xl">You've successfully installed the WiseBuy banner, but it doesn't look quite right. Maybe the colors are off, or the font size is wrong. This is a common issue when your website's existing CSS clashes with the styles of a third-party script. Fortunately, WiseBuy has a simple, powerful solution: CSS Prefixes.</p>
+            
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-foreground">What is a CSS Prefix and Why Do You Need It?</h3>
+            <p>A CSS prefix is a unique string of characters that we add to the beginning of every CSS class name on the WiseBuy banner. For example, a standard class like <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>.easy-ppp-container</code> can become <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>.my-site-easy-ppp-container</code>.</p>
+            <p>This is incredibly useful because it isolates our banner's styles from your website's styles. If your site already has a style defined for a class named <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>.container</code>, it could accidentally affect our banner. By adding a prefix, you ensure that your CSS and WiseBuy's CSS never conflict.</p>
+            
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-foreground">How to Add a CSS Prefix in WiseBuy</h3>
+            <p>Adding a prefix is a straightforward process that you can do right from your dashboard. Here’s how:</p>
+            <ol class="list-decimal list-inside space-y-2 my-4">
+                <li>Navigate to your WiseBuy Dashboard and select the product you want to customize.</li>
+                <li>Go to the <strong>"Customization"</strong> tab in the product editor.</li>
+                <li>Find the input field labeled <strong>"CSS Prefix"</strong>.</li>
+                <li>Enter a unique prefix. We recommend something short and specific to your brand, like <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>my-app-</code> or <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>wb-prefix-</code>.</li>
+                <li>Click <strong>"Save"</strong>. The changes will be applied to your live banner instantly.</li>
+            </ol>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-foreground">Example: Before and After</h3>
+            <p>Without a prefix, the banner's main container has a class like this:</p>
+            <pre class="p-4 bg-secondary rounded-lg overflow-x-auto text-sm my-4"><code class="language-html">&lt;div class="easy-ppp-container"&gt;...&lt;/div&gt;</code></pre>
+            <p>After adding a prefix of <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>my-site-</code>, the same element will look like this:</p>
+            <pre class="p-4 bg-secondary rounded-lg overflow-x-auto text-sm my-4"><code class="language-html">&lt;div class="my-site-easy-ppp-container"&gt;...&lt;/div&gt;</code></pre>
+            <p>This small change ensures that your custom styles for <code class='bg-muted text-muted-foreground p-1 rounded font-mono'>.container</code> will never interfere with the WiseBuy banner, giving you full control over your site's appearance.</p>
+          `,
         },
     ];
-    return posts.find(p => p.slug === slug);
+    return posts.find((p) => p.slug === slug);
 };
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {

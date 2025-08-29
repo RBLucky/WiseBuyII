@@ -1,6 +1,6 @@
-import { BrandLogo } from "@/components/BrandLogo"
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs"
-import Link from "next/link"
+import { BrandLogo } from "@/components/BrandLogo";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export function NavBar() {
   return (
@@ -9,13 +9,15 @@ export function NavBar() {
         <Link href="/" className="mr-auto">
           <BrandLogo />
         </Link>
-        <Link className="text-lg" href="#">
+        {/* FIX: Updated href from "#" to "/features" */}
+        <Link className="text-lg" href="/features">
           Features
         </Link>
         <Link className="text-lg" href="/#pricing">
           Pricing
         </Link>
-        <Link className="text-lg" href="#">
+        {/* FIX: Updated href from "#" to "/about" */}
+        <Link className="text-lg" href="/about">
           About
         </Link>
         <span className="text-lg">
@@ -28,5 +30,5 @@ export function NavBar() {
         </span>
       </nav>
     </header>
-  )
+  );
 }
